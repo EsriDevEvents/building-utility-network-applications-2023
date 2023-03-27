@@ -1,0 +1,136 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ViewAssociationsMaui.MainPage"
+             xmlns:esri="http://schemas.esri.com/arcgis/runtime/2013">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width=".3*" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <esri:MapView x:Name="MyMapView"
+                      GeoViewTapped="OnGeoViewTapped"
+                      Grid.Column="1" />
+        <Border VerticalOptions="StartAndExpand"
+                HorizontalOptions="Start">
+            <Grid Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Button x:Name="LoadVtpk"
+                        VerticalOptions="CenterAndExpand"
+                        Text="Load Basemap"
+                        Clicked="OnLoadBasemap" />
+                <Button x:Name="LoadGdb"
+                        VerticalOptions="CenterAndExpand"
+                        IsVisible="False"
+                        Text="Load Utility Network"
+                        Clicked="OnLoadUtilityNetwork"
+                        Grid.Row="1" />
+                <Grid Grid.Row="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition  Width="Auto" />
+                        <ColumnDefinition  Width="*" />
+                        <ColumnDefinition  Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Image x:Name="AttachmentImage"
+                           HeightRequest="35"
+                           WidthRequest="35">
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnReset" />
+                        </Image.GestureRecognizers>
+                    </Image>
+                    <Label Grid.Column="1"
+                           Margin="15,0,0,0"
+                           FontAttributes="Bold"
+                           VerticalTextAlignment="Center"
+                           Text="Attachment" />
+                    <Switch IsToggled="True"
+                            Grid.Column="2"
+                            Toggled="ViewAttachmentChanged" />
+                    <Image x:Name="ConnectivityImage"
+                           HeightRequest="35"
+                           WidthRequest="35"
+                           Grid.Row="1">
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnReset" />
+                        </Image.GestureRecognizers>
+                    </Image>
+                    <Label Grid.Row="1"
+                           Margin="15,0,0,0"
+                           FontAttributes="Bold"
+                           Grid.Column="1"
+                           VerticalTextAlignment="Center"
+                           Text="Connectivity" />
+                    <Switch IsToggled="True"
+                            Grid.Row="1"
+                            Grid.Column="2"
+                            Toggled="ViewConnectivityChanged" />
+                </Grid>
+                <CarouselView x:Name="IdentifiedFeatures"
+                              IsVisible="False"
+                              ItemsUpdatingScrollMode="KeepItemsInView"
+                              IndicatorView="indicatorView"
+                              CurrentItemChanged="OnGeoElementChanged"
+                              MinimumHeightRequest="350"
+                              Margin="10"
+                              Grid.Row="3">
+                    <CarouselView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Horizontal"
+                                           SnapPointsAlignment="Center"
+                                           SnapPointsType="MandatorySingle" />
+                    </CarouselView.ItemsLayout>
+                    <CarouselView.ItemTemplate>
+                        <DataTemplate>
+                            <CollectionView ItemsSource="{Binding Attributes}">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <ScrollView>
+                                            <Grid MaximumHeightRequest="350">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition />
+                                                    <RowDefinition />
+                                                </Grid.RowDefinitions>
+                                                <Label Text="{Binding Key}"
+                                                       LineBreakMode="TailTruncation"
+                                                       FontAttributes="Bold"
+                                                       TextTransform="Uppercase"
+                                                       Margin="2" />
+                                                <Label Grid.Row="1"
+                                                       Text="{Binding Value}"
+                                                       FontAttributes="Bold"
+                                                       Margin="15,2,0,2"
+                                                       LineBreakMode="TailTruncation"
+                                                       TextColor="Blue" />
+                                            </Grid>
+                                        </ScrollView>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </DataTemplate>
+                    </CarouselView.ItemTemplate>
+                </CarouselView>
+                <IndicatorView x:Name="indicatorView"
+                               IsVisible="{Binding Source={Reference IdentifiedFeatures}, Path=IsVisible}"
+                               Grid.Row="4"
+                               IndicatorsShape="Square"
+                               HorizontalOptions="Center"
+                               Margin="0,0,0,40" />
+            </Grid>
+        </Border>
+        <ActivityIndicator x:Name="Progress"
+                           IsRunning="True"
+                           IsVisible="False"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center" />
+    </Grid>
+</ContentPage>
